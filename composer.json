@@ -1,0 +1,21 @@
+{
+  "name": "teknologi/acf-agency-workflow",
+  "description": "Set the directory where acf-json gets stored in your theme",
+  "keywords": ["wordpress", "acf"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tim Brugman",
+      "homepage": "https://timbr.dev/"
+    },
+    {
+      "name": "Hans Czajkowski Jørgensen",
+      "email": "hcj@tekno.dk"
+    }
+  ],
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=5.3.2",
+    "composer/installers": "^1.4"
+  }
+}
