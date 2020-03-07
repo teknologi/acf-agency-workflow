@@ -1,6 +1,6 @@
 {
   "name": "teknologi/acf-agency-workflow",
-  "description": "Set the directory where acf-json gets stored in your theme",
+  "description": "WordPress plugin for ACF. Create, move, distribute and sync your Field Groups as JSON.",
   "keywords": ["wordpress", "acf"],
   "license": "MIT",
   "authors": [
