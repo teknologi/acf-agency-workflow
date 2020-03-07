@@ -35,7 +35,7 @@ Requirements may be lowered after proper testing.
 ## Installation
 
 1. Back up any existing Field Groups as a precaution.
-1. Define `WP_ENV` as `local` on your local environment. (`wp-config-local.php` perhaps?)
+1. Define `WP_ENV` as `development` on your local environment.
 1. Download & activate ACF PRO.
 1. Download & activate ACF Agency Workflow.
 1. Set ACF local JSON load locations.

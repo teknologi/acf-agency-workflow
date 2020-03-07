@@ -19,7 +19,7 @@ function aaw_act_on_added_json()
 
     global $aaw_feedback;
     $aaw_feedback['synced'] = '';
-    if ( defined( 'WP_ENV' ) && WP_ENV == 'local' )
+    if ( defined( 'WP_ENV' ) && WP_ENV == 'development' )
     {
         $aaw_feedback['synced'] .= '<p>'.__( 'The following ACF Field Groups were synced from their JSON cache:', 'acf-agency-workflow' ).'</p>';
         $aaw_feedback['synced'] .= '<ol>';
