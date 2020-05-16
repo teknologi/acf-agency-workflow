@@ -220,6 +220,21 @@ add_action( 'admin_notices', function () {
     printf( '<div class="%1$s">%2$s</div>', 'notice notice-warning', $feedback );
 });
 
+add_filter('plugin_action_links_'.plugin_basename(__FILE__), function ( $links ) {
+
+    $url = esc_url( add_query_arg(
+		'page',
+		dirname( plugin_basename(__FILE__) ) . '-settings',
+		get_admin_url() . 'options-general.php'
+    ) );
+
+    $settings_link = $settings_link = "<a href='$url'>" . __( 'Settings', 'acf-agency-workflow' ) . '</a>';
+
+    array_push(	$links,	$settings_link );
+
+    return $links;
+});
+
 add_action( 'admin_menu', 'aaw_settings_menu' );
 function aaw_settings_menu() {
     add_submenu_page('options-general.php', __('ACF Agency Workflow', 'acf-agency-workflow'), __('ACF Agency Workflow', 'acf-agency-workflow'), 'manage_options', dirname( plugin_basename(__FILE__) ) . '-settings', function() {
