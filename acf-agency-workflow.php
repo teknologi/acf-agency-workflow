@@ -238,11 +238,101 @@ add_filter('plugin_action_links_'.plugin_basename(__FILE__), function ( $links )
 add_action( 'admin_menu', 'aaw_settings_menu' );
 function aaw_settings_menu() {
     add_submenu_page('options-general.php', __('ACF Agency Workflow', 'acf-agency-workflow'), __('ACF Agency Workflow', 'acf-agency-workflow'), 'manage_options', dirname( plugin_basename(__FILE__) ) . '-settings', function() {
+        $plugin_slug = dirname( plugin_basename(__FILE__) );
+
         if ( !current_user_can( 'manage_options' ) )  {
-		    wp_die( __( 'You do not have sufficient permissions to access this page.', 'acf-agency-workflow' ) );
-	    }
-        echo '<div class="wrap">';
-        echo '<h1>ACF Agency Workflow Settings</h1>';
-        echo '</div>';
+		    return;
+        }
+
+        // add error/update messages
+
+        // check if the user have submitted the settings
+        // wordpress will add the "settings-updated" $_GET parameter to the url
+        if ( isset( $_GET['settings-updated'] ) ) {
+            // add settings saved message with the class of "updated"
+            add_settings_error( 'wporg_messages', 'wporg_message', __( 'Settings Saved', 'wporg' ), 'updated' );
+        }
+
+        ?>
+        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+        <form action="options.php" method="post">
+           <?php
+            // output security fields for the registered setting "wporg"
+            settings_fields( $plugin_slug . '-settings' );
+
+            // output setting sections and their fields
+            // (sections are registered for "wporg", each field is registered to a specific section)
+            do_settings_sections( $plugin_slug . '-settings' );
+
+            // output save settings button
+            submit_button( 'Save Settings' );
+        ?>
+        </form>
+                <?php
     }, 99 );
 }
+
+function aaw_settings_init() {
+    $plugin_slug = dirname( plugin_basename(__FILE__) );
+
+    // register a new setting for "acf-agency-workflow-settings" page
+    register_setting( $plugin_slug . '-settings', $plugin_slug . '-wpenv' );
+
+    // register a new section in the "acf-agency-workflow-settings" page
+    add_settings_section(
+        $plugin_slug . '-settings-section-wpenv',
+        __( 'WordPress Environment', 'acf-agency-workflow' ),
+        'acf_agency_workflow_settings_section_wpenv_cb',
+        $plugin_slug . '-settings'
+    );
+
+    // register a new field in the "wporg_section_developers" section, inside the "wporg" page
+    add_settings_field(
+        $plugin_slug . '-wpenv', // as of WP 4.6 this value is used only internally
+        // use $args' label_for to populate the id inside the callback
+        __( 'Environment slug', 'acf-agency-workflow' ),
+        'acf_agency_workflow_settings_field_wpenv_cb',
+        $plugin_slug . '-settings',
+        $plugin_slug . '-settings-section-wpenv',
+        [
+            'label_for' => 'wporg_field_pill',
+            'class' => 'wporg_row',
+            'wporg_custom_data' => 'custom',
+        ]
+    );
+}
+
+// pill field cb
+
+// field callbacks can accept an $args parameter, which is an array.
+// $args is defined at the add_settings_field() function.
+// wordpress has magic interaction with the following keys: label_for, class.
+// the "label_for" key value is used for the "for" attribute of the <label>.
+// the "class" key value is used for the "class" attribute of the <tr> containing the field.
+// you can add custom key value pairs to be used inside your callbacks.
+function acf_agency_workflow_settings_field_wpenv_cb( $args ) {
+    $plugin_slug = dirname( plugin_basename(__FILE__) );
+
+    // get the value of the setting we've registered with register_setting()
+    $options = get_option( $plugin_slug . '-wpenv' );
+
+    // output the field
+    ?>
+        <input name="<? echo $plugin_slug ?>-wpenv" type="text" id="<? echo $plugin_slug ?>-wpenv" value="<? echo get_option($plugin_slug . '-wpenv') ?>" class="regular-text ltr">
+        <p class="description">
+        <?php esc_html_e( 'Field description goes here.', 'acf-agency-workflow' ); ?>
+        </p>
+        <?php
+}
+// section callbacks can accept an $args parameter, which is an array.
+// $args have the following keys defined: title, id, callback.
+// the values are defined at the add_settings_section() function.
+function acf_agency_workflow_settings_section_wpenv_cb( $args ) {
+    ?>
+        <p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'Explain why setting the WordPress environment slug is important, and what it does to the functionality of ACF Agency Workflow.', 'acf-agency-workflow' ); ?></p>
+    <?php
+}
+/**
+ * register our wporg_settings_init to the admin_init action hook
+ */
+add_action( 'admin_init', 'aaw_settings_init' );
