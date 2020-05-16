@@ -204,8 +204,9 @@ add_action( 'admin_notices', function () {
  */
 
 add_action( 'admin_notices', function () {
+    $plugin_slug = dirname( plugin_basename(__FILE__) );
 
-    if ( !defined( 'WP_ENV' ) || WP_ENV == 'development' )
+    if ( !defined( 'WP_ENV' ) || WP_ENV == get_option($plugin_slug . '-wpenv', 'local') )
         return;
 
     if ( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'acf-field-group' )
