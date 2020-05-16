@@ -220,3 +220,14 @@ add_action( 'admin_notices', function () {
     printf( '<div class="%1$s">%2$s</div>', 'notice notice-warning', $feedback );
 });
 
+add_action( 'admin_menu', 'aaw_settings_menu' );
+function aaw_settings_menu() {
+    add_submenu_page('options-general.php', __('ACF Agency Workflow', 'acf-agency-workflow'), __('ACF Agency Workflow', 'acf-agency-workflow'), 'manage_options', dirname( plugin_basename(__FILE__) ) . '-settings', function() {
+        if ( !current_user_can( 'manage_options' ) )  {
+		    wp_die( __( 'You do not have sufficient permissions to access this page.', 'acf-agency-workflow' ) );
+	    }
+        echo '<div class="wrap">';
+        echo '<h1>ACF Agency Workflow Settings</h1>';
+        echo '</div>';
+    }, 99 );
+}
